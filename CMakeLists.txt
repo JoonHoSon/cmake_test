@@ -6,8 +6,25 @@ message(STATUS "--------------------------------------------------------------")
 message(STATUS "start ${PROJECT_NAME} build.")
 message(STATUS "--------------------------------------------------------------")
 
-set(BOOST_DIR "/usr/local/Cellar/boost/1.72.0_3")
-set(Boost_INCLUDE_DIRS ${BOOST_DIR}/include)
+if (UNIX AND NOT APPLE)
+    # linux
+    message(STATUS "check unix(not osx) setting values")
+
+    set(BOOST_DIR "")
+    set(Boost_INCLUDE_DIRS "")
+    set(MYSQL_LIB_ROOT_DIR "/usr/local")
+    set(MYSQL_LIB_DIR "${MYSQL_LIB_ROOT_DIR}/lib")
+    set(MYSQL_LIB_INCLUDE_DIR "${MYSQL_LIB_ROOT_DIR}/include")
+    set(MYSQL_LIB_NAME "mysqlcppconn")
+elseif(APPLE)
+    set(BOOST_DIR "/usr/local/Cellar/boost/1.72.0_3")
+    set(Boost_INCLUDE_DIRS ${BOOST_DIR}/include)
+    set(MYSQL_LIB_ROOT_DIR "/usr/local/Cellar/mysql-connector-c++@1.1/1.1.13_1")
+    set(MYSQL_LIB_DIR "${MYSQL_LIB_ROOT_DIR}/lib")
+    set(MYSQL_LIB_INCLUDE_DIR "${MYSQL_LIB_ROOT_DIR}/include")
+    set(MYSQL_LIB_NAME "mysqlcppconn")
+elseif(LINUX)
+endif()
 
 # -----------------------------------------------------------------------------------
 # boost
@@ -26,13 +43,13 @@ endif()
 # -----------------------------------------------------------------------------------
 find_library(
     LIB_MYSQL_CPP
-    NAMES mysqlcppconn
-    HINTS "/usr/local/Cellar/mysql-connector-c++@1.1/1.1.13_1/lib"
+    NAMES ${MYSQL_LIB_NAME}
+    HINTS ${MYSQL_LIB_DIR}
     NO_DEFAULT_PATH
     REQUIRED
 )
 
-include_directories("/usr/local/Cellar/mysql-connector-c++@1.1/1.1.13_1/include")
+include_directories(${MYSQL_LIB_INCLUDE_DIR})
 
 add_library(LIB_MYSQL_CPP STATIC IMPORTED)
 add_executable(${PROJECT_NAME} main.cpp)

@@ -20,7 +20,8 @@ int main() {
         ResultSet* result;
 
         driver = get_driver_instance();
-        connection = driver->connect("tcp://127.0.0.1:32758", "bokja", "1111");
+        //connection = driver->connect("tcp://127.0.0.1:32758", "bokja", "1111");
+        connection = driver->connect("tcp://192.168.2.12:32758", "bokja", "1111");
 
         connection->setSchema("bokja");
 
